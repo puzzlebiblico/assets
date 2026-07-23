@@ -929,11 +929,23 @@
                 
                 this.bgMusic = new Audio('https://raw.githubusercontent.com/puzzlebiblico/assets/88b4f6ff88e808ae83f3ee700c94019680d634f5/sounds/sountrack.mp3');
                 this.bgMusic.loop = true;
-                this.sndEncaixe = new Audio('https://raw.githubusercontent.com/puzzlebiblico/assets/88b4f6ff88e808ae83f3ee700c94019680d634f5/sounds/encaixe.mp3');
-                this.sndDica = new Audio('https://raw.githubusercontent.com/puzzlebiblico/assets/88b4f6ff88e808ae83f3ee700c94019680d634f5/sounds/dica.mp3');
-                this.sndVitoria = new Audio('https://raw.githubusercontent.com/puzzlebiblico/assets/88b4f6ff88e808ae83f3ee700c94019680d634f5/sounds/vitoria.mp3');
+                
+                this.soundPools = {
+                    encaixe: 'https://raw.githubusercontent.com/puzzlebiblico/assets/88b4f6ff88e808ae83f3ee700c94019680d634f5/sounds/encaixe.mp3',
+                    dica: 'https://raw.githubusercontent.com/puzzlebiblico/assets/88b4f6ff88e808ae83f3ee700c94019680d634f5/sounds/dica.mp3',
+                    vitoria: 'https://raw.githubusercontent.com/puzzlebiblico/assets/88b4f6ff88e808ae83f3ee700c94019680d634f5/sounds/vitoria.mp3'
+                };
 
                 this.init();
+            }
+
+            playSound(type) {
+                if (!this.soundEnabled) return;
+                const url = this.soundPools[type];
+                if (!url) return;
+                const sfx = new Audio(url);
+                sfx.currentTime = 0;
+                sfx.play().catch(() => {});
             }
 
             async init() {
@@ -1016,10 +1028,7 @@
             }
 
             showDailyModal() {
-                if (this.soundEnabled) {
-                    this.sndDica.currentTime = 0;
-                    this.sndDica.play().catch(() => {});
-                }
+                this.playSound('dica');
 
                 const modal = document.createElement('div');
                 modal.className = 'ad-modal';
@@ -1613,10 +1622,7 @@
                 const slot = document.querySelectorAll('.slot')[slotIndex];
                 if (slot) slot.classList.add('correct');
 
-                if (this.soundEnabled) {
-                    this.sndEncaixe.currentTime = 0;
-                    this.sndEncaixe.play().catch(() => {});
-                }
+                this.playSound('encaixe');
 
                 if (this.vibrationEnabled && navigator.vibrate) {
                     navigator.vibrate(50);
@@ -1663,10 +1669,7 @@
                             piece.classList.add('hint-sliding');
                             piece.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.05)`;
 
-                            if (this.soundEnabled) {
-                                this.sndDica.currentTime = 0;
-                                this.sndDica.play().catch(() => {});
-                            }
+                            this.playSound('dica');
                             if (this.vibrationEnabled && navigator.vibrate) {
                                 navigator.vibrate(100);
                             }
@@ -1729,10 +1732,7 @@
             }
 
             showVictoryModal() {
-                if (this.soundEnabled) {
-                    this.sndVitoria.currentTime = 0;
-                    this.sndVitoria.play().catch(() => {});
-                }
+                this.playSound('vitoria');
 
                 const modal = document.createElement('div');
                 modal.className = 'victory-modal';
@@ -1747,10 +1747,7 @@
             }
 
             showAllLevelsCompletedModal() {
-                if (this.soundEnabled) {
-                    this.sndVitoria.currentTime = 0;
-                    this.sndVitoria.play().catch(() => {});
-                }
+                this.playSound('vitoria');
 
                 const modal = document.createElement('div');
                 modal.className = 'victory-modal';
